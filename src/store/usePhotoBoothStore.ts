@@ -10,6 +10,7 @@ interface PhotoBoothStore extends PhotoBoothState {
   removeCapturedPhoto: (id: string) => void;
   updatePhoto: (id: string, dataUrl: string) => void;
   setCurrentPhotoIndex: (index: number) => void;
+  setRetakeIndex: (index: number | null) => void;
   setFacingMode: (mode: 'user' | 'environment') => void;
   setFilter: (filter: PhotoBoothState['filter']) => void;
   setCurrentStep: (step: PhotoBoothState['currentStep']) => void;
@@ -22,6 +23,7 @@ const initialState: PhotoBoothState = {
   selectedFrame: null,
   capturedPhotos: [],
   currentPhotoIndex: 0,
+  retakeIndex: null,
   facingMode: 'user',
   filter: 'none',
   currentStep: 'layout',
@@ -50,6 +52,7 @@ export const usePhotoBoothStore = create<PhotoBoothStore>((set) => ({
   })),
   
   setCurrentPhotoIndex: (index) => set({ currentPhotoIndex: index }),
+  setRetakeIndex: (index) => set({ retakeIndex: index }),
   setFacingMode: (mode) => set({ facingMode: mode }),
   setFilter: (filter) => set({ filter }),
   setCurrentStep: (step) => set({ currentStep: step }),

@@ -17,6 +17,8 @@ export default function CameraCapture() {
     filter,
     addCapturedPhoto,
     setCurrentStep,
+    retakeIndex,
+    setRetakeIndex,
     setFacingMode,
     setFilter,
   } = usePhotoBoothStore();
@@ -26,7 +28,8 @@ export default function CameraCapture() {
 
   const layoutConfig = layout === '3-strip' ? { count: 3 } : { count: 4 }; // Supports 4-strip, 4-collage, and 2x2-grid (all need 4 photos)
   const remainingPhotos = layoutConfig.count - capturedPhotos.length;
-  const isComplete = remainingPhotos === 0;
+  const isRetake = retakeIndex !== null;
+  const isComplete = !isRetake && remainingPhotos === 0;
 
   // Use refs to avoid circular dependency
   const resetCountdownRef = useRef<(() => void) | null>(null);
@@ -44,21 +47,34 @@ export default function CameraCapture() {
         ? await applyFilter(imageSrc, filter)
         : imageSrc;
       
-      addCapturedPhoto({
-        id: Date.now().toString(),
-        dataUrl: processedImage,
-        timestamp: Date.now(),
-      });
+      if (isRetake && retakeIndex !== null) {
+        const target = capturedPhotos[retakeIndex];
+        if (target) {
+          // replace existing photo
+          usePhotoBoothStore.getState().updatePhoto(target.id, processedImage);
+        }
+      } else {
+        addCapturedPhoto({
+          id: Date.now().toString(),
+          dataUrl: processedImage,
+          timestamp: Date.now(),
+        });
+      }
       
-      // Recalculate after adding photo
-      const currentPhotoCount = capturedPhotos.length + 1;
+      // Recalculate after add/replace
+      const currentPhotoCount = isRetake ? capturedPhotos.length : capturedPhotos.length + 1;
       const neededPhotos = layoutConfig.count;
       const remaining = neededPhotos - currentPhotoCount;
       
       setIsCapturing(false);
       
-      // If more photos needed, reset countdown; otherwise go to review
-      if (remaining > 0) {
+      // If retake, go straight back to review
+      if (isRetake) {
+        setRetakeIndex(null);
+        setTimeout(() => {
+          setCurrentStep('review');
+        }, 400);
+      } else if (remaining > 0) {
         setTimeout(() => {
           resetCountdownRef.current?.();
           startCountdownRef.current?.();
@@ -71,7 +87,7 @@ export default function CameraCapture() {
     } else {
       setIsCapturing(false);
     }
-  }, [capture, filter, addCapturedPhoto, capturedPhotos.length, layoutConfig.count, isCapturing, setCurrentStep]);
+  }, [capture, filter, addCapturedPhoto, capturedPhotos, layoutConfig.count, isCapturing, isRetake, retakeIndex, setCurrentStep, setRetakeIndex]);
 
   const { seconds, start: startCountdown, reset: resetCountdown } = useCountdown(3, handleCapture);
 

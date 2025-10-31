@@ -14,6 +14,7 @@ export default function PhotoReview() {
     selectedFrame,
     setCurrentStep,
     removeCapturedPhoto,
+    setRetakeIndex,
   } = usePhotoBoothStore();
 
   const [compositeUrl, setCompositeUrl] = useState<string | null>(null);
@@ -43,8 +44,8 @@ export default function PhotoReview() {
     generateComposite();
   }, [layout, orientation, capturedPhotos, selectedFrame]);
 
-  const handleRetake = (photoId: string) => {
-    removeCapturedPhoto(photoId);
+  const handleRetake = (index: number) => {
+    setRetakeIndex(index);
     setCurrentStep('capture');
   };
 
@@ -109,7 +110,7 @@ export default function PhotoReview() {
                 className="w-full aspect-square object-cover rounded-2xl shadow-lg"
               />
               <button
-                onClick={() => handleRetake(photo.id)}
+                onClick={() => handleRetake(index)}
                 className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl flex items-center justify-center text-white font-semibold"
               >
                 Retake
