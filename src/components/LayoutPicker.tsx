@@ -37,9 +37,9 @@ export default function LayoutPicker() {
               className="bg-white rounded-3xl p-6 shadow-xl cursor-pointer hover:shadow-2xl transition-all"
             >
               <div className="aspect-[2/3] bg-gradient-to-br from-pastel-pink to-pastel-lavender rounded-2xl mb-4 p-3">
-                {layout.id === '3-strip' && (
-                  <div className="grid grid-rows-3 gap-2 h-full">
-                    {Array.from({ length: 3 }).map((_, i) => (
+                {(layout.id === '3-strip' || layout.id === '4-strip') && (
+                  <div className={`grid ${layout.id === '3-strip' ? 'grid-rows-3' : 'grid-rows-4'} gap-1.5 h-full`}>
+                    {Array.from({ length: layout.photoCount }).map((_, i) => (
                       <div key={i} className="bg-white/80 rounded-lg flex items-center justify-center">
                         <div className="w-full h-[68%] bg-white/90 rounded-md flex items-center justify-center">
                           <span className="text-xl">📷</span>
@@ -48,18 +48,7 @@ export default function LayoutPicker() {
                     ))}
                   </div>
                 )}
-                {layout.id === '4-collage' && (
-                  <div className="grid grid-cols-2 grid-rows-2 gap-2 h-full">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                      <div key={i} className="bg-white/80 rounded-lg flex items-center justify-center">
-                        <div className="w-[88%] h-[88%] bg-white/90 rounded-md flex items-center justify-center">
-                          <span className="text-xl">📷</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {layout.id === '2x2-grid' && (
+                {(layout.id === '4-collage' || layout.id === '2x2-grid') && (
                   <div className="grid grid-cols-2 grid-rows-2 gap-2 h-full">
                     {Array.from({ length: 4 }).map((_, i) => (
                       <div key={i} className="bg-white/80 rounded-lg flex items-center justify-center">
@@ -72,9 +61,10 @@ export default function LayoutPicker() {
                 )}
               </div>
               <h3 className="text-xl font-semibold mb-2">{layout.name}</h3>
-              <p className="text-sm text-gray-600">{layout.description}</p>
-              <div className="mt-4 text-xs text-gray-500">
-                {layout.photoCount} photos • {layout.orientation}
+              <p className="text-sm text-gray-600 mb-2">{layout.description}</p>
+              <div className="mt-4 text-xs text-gray-500 space-y-1">
+                <div className="font-semibold text-gray-700">{layout.dimensions}</div>
+                <div>{layout.photoCount} photos • {layout.orientation}</div>
               </div>
             </motion.div>
           ))}

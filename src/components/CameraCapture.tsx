@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 import Webcam from 'react-webcam';
 import { motion } from 'framer-motion';
 import { usePhotoBoothStore } from '@/store/usePhotoBoothStore';
@@ -24,9 +24,13 @@ export default function CameraCapture() {
   const { webcamRef, capture, flipCamera: handleFlipCamera } = useCamera();
   const [isCapturing, setIsCapturing] = useState(false);
 
-  const layoutConfig = layout === '3-strip' ? { count: 3 } : { count: 4 };
+  const layoutConfig = layout === '3-strip' ? { count: 3 } : { count: 4 }; // Supports 4-strip, 4-collage, and 2x2-grid (all need 4 photos)
   const remainingPhotos = layoutConfig.count - capturedPhotos.length;
   const isComplete = remainingPhotos === 0;
+
+  // Use refs to avoid circular dependency
+  const resetCountdownRef = useRef<(() => void) | null>(null);
+  const startCountdownRef = useRef<(() => void) | null>(null);
 
   const handleCapture = useCallback(async () => {
     if (isCapturing) return;
@@ -45,27 +49,42 @@ export default function CameraCapture() {
         dataUrl: processedImage,
         timestamp: Date.now(),
       });
-    }
-    
-    setIsCapturing(false);
-    
-    // If more photos needed, reset countdown; otherwise go to review
-    if (remainingPhotos > 1) {
-      setTimeout(() => {
-        resetCountdown();
-        startCountdown();
-      }, 1000);
+      
+      // Recalculate after adding photo
+      const currentPhotoCount = capturedPhotos.length + 1;
+      const neededPhotos = layoutConfig.count;
+      const remaining = neededPhotos - currentPhotoCount;
+      
+      setIsCapturing(false);
+      
+      // If more photos needed, reset countdown; otherwise go to review
+      if (remaining > 0) {
+        setTimeout(() => {
+          resetCountdownRef.current?.();
+          startCountdownRef.current?.();
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          setCurrentStep('review');
+        }, 1000);
+      }
     } else {
-      setTimeout(() => {
-        setCurrentStep('review');
-      }, 1000);
+      setIsCapturing(false);
     }
-  }, [capture, filter, addCapturedPhoto, remainingPhotos, isCapturing, resetCountdown, startCountdown, setCurrentStep]);
+  }, [capture, filter, addCapturedPhoto, capturedPhotos.length, layoutConfig.count, isCapturing, setCurrentStep]);
 
   const { seconds, start: startCountdown, reset: resetCountdown } = useCountdown(3, handleCapture);
 
+  // Store refs
+  useEffect(() => {
+    resetCountdownRef.current = resetCountdown;
+    startCountdownRef.current = startCountdown;
+  }, [resetCountdown, startCountdown]);
+
   const handleTakePhoto = () => {
-    startCountdown();
+    if (!isCapturing && seconds === 0) {
+      startCountdown();
+    }
   };
 
   // Set initial facing mode
@@ -97,18 +116,19 @@ export default function CameraCapture() {
       {/* Overlay UI */}
       <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center p-4">
         {/* Countdown Display */}
-        {seconds > 0 && seconds <= 3 && (
+        {seconds > 0 && seconds <= 3 ? (
           <motion.div
+            key={seconds}
             initial={{ scale: 0 }}
             animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 0.3, repeat: seconds > 0 ? true : false }}
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+            transition={{ duration: 0.3, repeat: true }}
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
           >
             <div className="text-9xl font-bold text-white drop-shadow-2xl">
               {seconds}
             </div>
           </motion.div>
-        )}
+        ) : null}
 
         {/* Progress Indicator */}
         <div className="absolute top-8 left-1/2 transform -translate-x-1/2">

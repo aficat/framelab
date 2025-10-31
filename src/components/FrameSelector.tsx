@@ -14,7 +14,7 @@ const categories: Array<{ id: Frame['category']; name: string; emoji: string }> 
 ];
 
 export default function FrameSelector() {
-  const { setSelectedFrame, setCurrentStep } = usePhotoBoothStore();
+  const { setSelectedFrame, setCurrentStep, layout } = usePhotoBoothStore();
   const [selectedCategory, setSelectedCategory] = useState<Frame['category'] | 'all'>('all');
 
   const displayFrames = selectedCategory === 'all' 
@@ -24,6 +24,105 @@ export default function FrameSelector() {
   const handleSelectFrame = (frame: Frame) => {
     setSelectedFrame(frame);
     setCurrentStep('capture');
+  };
+
+  // Get theme-specific styling
+  const getThemeStyle = (category: Frame['category']) => {
+    switch (category) {
+      case 'gen-z':
+        return {
+          border: 'border-2 border-purple-300',
+          accent: '✨',
+          gradient: 'from-purple-100 to-pink-100',
+        };
+      case 'pop-icons':
+        return {
+          border: 'border-2 border-yellow-300',
+          accent: '⭐',
+          gradient: 'from-yellow-100 to-pink-100',
+        };
+      case 'seasonal':
+        return {
+          border: 'border-2 border-red-300',
+          accent: '🎀',
+          gradient: 'from-red-100 to-pink-100',
+        };
+      default:
+        return {
+          border: 'border-2 border-gray-300',
+          accent: '',
+          gradient: 'from-gray-50 to-gray-100',
+        };
+    }
+  };
+
+  // Render photo strip preview based on selected layout
+  const renderPhotoStripPreview = (frame: Frame) => {
+    // Default to 3-strip if no layout selected
+    const currentLayout = layout || '3-strip';
+    const themeStyle = getThemeStyle(frame.category);
+    
+    if (currentLayout === '3-strip' || currentLayout === '4-strip') {
+      const photoCount = currentLayout === '3-strip' ? 3 : 4;
+      return (
+        <div className={`aspect-[2/3] bg-gradient-to-br ${themeStyle.gradient} rounded-xl p-2 relative overflow-hidden ${themeStyle.border}`}>
+          {/* Frame border/decorative elements */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center opacity-20">
+            {frame.category === 'gen-z' && (
+              <div className="absolute top-2 text-2xl">🎀</div>
+            )}
+            {frame.category === 'pop-icons' && (
+              <div className="absolute top-2 text-2xl">🎤</div>
+            )}
+          </div>
+          {/* Photo strip layout */}
+          <div className={`grid ${photoCount === 3 ? 'grid-rows-3' : 'grid-rows-4'} gap-1.5 h-full relative z-10`}>
+            {Array.from({ length: photoCount }).map((_, i) => (
+              <div key={i} className="bg-white/95 rounded-lg shadow-sm flex items-center justify-center relative overflow-hidden">
+                {/* Photo placeholder */}
+                <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                  <span className="text-2xl opacity-50">📸</span>
+                </div>
+                {/* Theme accent */}
+                {themeStyle.accent && (
+                  <span className="absolute top-1 right-1 text-sm">{themeStyle.accent}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    } else {
+      // 4-collage or 2x2-grid
+      return (
+        <div className={`aspect-square bg-gradient-to-br ${themeStyle.gradient} rounded-xl p-2 relative overflow-hidden ${themeStyle.border}`}>
+          {/* Frame border/decorative elements */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-20">
+            {frame.category === 'gen-z' && (
+              <div className="text-xl">✨</div>
+            )}
+            {frame.category === 'pop-icons' && (
+              <div className="text-xl">⭐</div>
+            )}
+          </div>
+          {/* Photo grid layout */}
+          <div className="grid grid-cols-2 grid-rows-2 gap-1.5 h-full relative z-10">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="bg-white/95 rounded-lg shadow-sm flex items-center justify-center relative overflow-hidden">
+                {/* Photo placeholder */}
+                <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                  <span className="text-sm opacity-50">📸</span>
+                </div>
+                {/* Theme accent */}
+                {themeStyle.accent && (
+                  <span className="absolute top-0.5 right-0.5 text-xs">{themeStyle.accent}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
   };
 
   return (
@@ -77,12 +176,13 @@ export default function FrameSelector() {
               className="bg-white rounded-2xl p-4 shadow-lg cursor-pointer hover:shadow-xl transition-all relative"
             >
               {frame.premium && (
-                <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-[10px] px-2 py-1 rounded-full font-semibold tracking-wide uppercase">
+                <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-[10px] px-2 py-1 rounded-full font-semibold tracking-wide uppercase z-10">
                   🌟 Limited Edition
                 </div>
               )}
-              <div className="aspect-square bg-gradient-to-br from-pastel-pink to-pastel-lavender rounded-xl mb-3 flex items-center justify-center">
-                <span className="text-4xl">🖼️</span>
+              {/* Photo Strip Preview */}
+              <div className="mb-3">
+                {renderPhotoStripPreview(frame)}
               </div>
               <h3 className="font-semibold text-sm text-center">{frame.name}</h3>
             </motion.div>

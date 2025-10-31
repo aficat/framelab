@@ -35,11 +35,12 @@ export const createComposite = async (
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Layout-specific photo placement
-  if (layout === '3-strip') {
+  if (layout === '3-strip' || layout === '4-strip') {
     const photoWidth = canvas.width * 0.85;
     const photoHeight = photoWidth * 1.2;
-    const spacing = canvas.height / 4;
-    const startY = spacing;
+    const totalPhotos = photos.length;
+    const spacing = canvas.height / (totalPhotos + 1); // Dynamic spacing based on photo count
+    const startY = spacing * 0.5;
 
     // Load all images in parallel
     const imagePromises = photos.map((photo, index) => {
@@ -56,7 +57,7 @@ export const createComposite = async (
     // Draw images in sequence
     for (const { img, index } of loadedImages) {
       const x = (canvas.width - photoWidth) / 2;
-      const y = startY + index * (photoHeight + spacing / 2);
+      const y = startY + index * (photoHeight + spacing * 0.3);
       
       // Draw photo with rounded corners
       ctx.save();

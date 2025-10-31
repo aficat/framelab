@@ -12,11 +12,19 @@ export const useCountdown = (
     
     if (isActive && seconds > 0) {
       interval = setInterval(() => {
-        setSeconds((prev) => prev - 1);
+        setSeconds((prev) => {
+          const next = prev - 1;
+          if (next <= 0) {
+            setIsActive(false);
+            // Call onComplete immediately when reaching 0
+            setTimeout(() => {
+              onComplete?.();
+            }, 0);
+            return 0;
+          }
+          return next;
+        });
       }, 1000);
-    } else if (isActive && seconds === 0) {
-      setIsActive(false);
-      onComplete?.();
     }
     
     return () => {

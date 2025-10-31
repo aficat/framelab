@@ -1,6 +1,6 @@
 export type Orientation = 'portrait' | 'landscape';
 
-export type LayoutType = '3-strip' | '4-collage' | '2x2-grid';
+export type LayoutType = '3-strip' | '4-strip' | '4-collage' | '2x2-grid';
 
 export interface Layout {
   id: LayoutType;
@@ -8,6 +8,7 @@ export interface Layout {
   description: string;
   orientation: Orientation;
   photoCount: number;
+  dimensions?: string; // Standard photobooth dimensions
 }
 
 export interface Frame {
@@ -17,6 +18,7 @@ export interface Frame {
   preview: string;
   overlay: string; // Path to SVG/PNG overlay
   premium?: boolean;
+  description?: string; // Optional description for frame
 }
 
 export interface CapturedPhoto {
