@@ -1,6 +1,6 @@
 export type Orientation = 'portrait' | 'landscape';
 
-export type LayoutType = '3-strip' | '4-strip' | '4-collage' | '2x2-grid';
+export type LayoutType = '3-strip' | '4-strip' | '4-collage';
 
 export interface Layout {
   id: LayoutType;

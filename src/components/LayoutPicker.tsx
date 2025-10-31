@@ -48,7 +48,7 @@ export default function LayoutPicker() {
                     ))}
                   </div>
                 )}
-                {(layout.id === '4-collage' || layout.id === '2x2-grid') && (
+                {layout.id === '4-collage' && (
                   <div className="grid grid-cols-2 grid-rows-2 gap-2 h-full">
                     {Array.from({ length: 4 }).map((_, i) => (
                       <div key={i} className="bg-white/80 rounded-lg flex items-center justify-center">

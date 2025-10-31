@@ -93,7 +93,7 @@ export default function FrameSelector() {
         </div>
       );
     } else {
-      // 4-collage or 2x2-grid
+      // 4-collage
       return (
         <div className={`aspect-square bg-gradient-to-br ${themeStyle.gradient} rounded-xl p-2 relative overflow-hidden ${themeStyle.border}`}>
           {/* Frame border/decorative elements */}
