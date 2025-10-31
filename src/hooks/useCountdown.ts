@@ -1,25 +1,37 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 export const useCountdown = (
   initialSeconds: number = 3,
   onComplete?: () => void
 ) => {
-  const [seconds, setSeconds] = useState(initialSeconds);
+  const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const onCompleteRef = useRef(onComplete);
+
+  // Keep onComplete ref updated
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-    
+    // Clear any existing interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
     if (isActive && seconds > 0) {
-      interval = setInterval(() => {
+      // Start the countdown interval
+      intervalRef.current = setInterval(() => {
         setSeconds((prev) => {
           const next = prev - 1;
           if (next <= 0) {
             setIsActive(false);
-            // Call onComplete immediately when reaching 0
+            // Call onComplete callback
             setTimeout(() => {
-              onComplete?.();
-            }, 0);
+              onCompleteRef.current?.();
+            }, 50);
             return 0;
           }
           return next;
@@ -28,11 +40,15 @@ export const useCountdown = (
     }
     
     return () => {
-      if (interval) clearInterval(interval);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     };
-  }, [isActive, seconds, onComplete]);
+  }, [isActive, seconds]);
 
   const start = useCallback(() => {
+    // Set seconds first, then activate immediately
     setSeconds(initialSeconds);
     setIsActive(true);
   }, [initialSeconds]);
