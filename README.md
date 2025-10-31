@@ -12,7 +12,7 @@ FrameLab is a cute, Gen Z-style PWA photobooth app that lets users capture aesth
 - 🌈 Portrait and landscape orientations
 - ✨ Photo editing and filters
 - 📥 Download and share functionality
-- 📧 Email delivery option
+- 📧 Email delivery option (optional)
 - 📱 PWA support (offline-ready, installable)
 
 ## Getting Started
@@ -37,7 +37,7 @@ npm run dev
 - **State Management:** Zustand
 - **Camera:** react-webcam
 - **Image Processing:** Canvas API
-- **Email:** EmailJS
+- **Email:** (optional)
 - **Animations:** Framer Motion
 
 ## Project Structure

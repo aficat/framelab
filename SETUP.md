@@ -115,9 +115,9 @@ The current service worker is basic. Consider adding:
 
 ### Recommended: Add More Features
 
-1. **Premium Frame System**
+1. **Limited Edition Series System**
    - Payment integration (Stripe/PayPal)
-   - Frame unlock mechanism
+   - Series unlock mechanism
    - User authentication (optional)
 
 2. **Enhanced Editing**
@@ -133,7 +133,7 @@ The current service worker is basic. Consider adding:
 4. **Analytics**
    - Track user sessions
    - Monitor popular frames
-   - Conversion tracking for premium frames
+   - Conversion tracking for Limited Edition Series
 
 ## 🐛 Known Issues / Limitations
 
