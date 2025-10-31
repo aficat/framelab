@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --pastel-lavender: #E6D9F2;
+  --pastel-beige: #F5E6D3;
+  --pastel-pink: #FFE5F1;
+  --pastel-mint: #E0F2E9;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: 'Poppins', 'DM Sans', sans-serif;
+  background: linear-gradient(135deg, var(--pastel-lavender) 0%, var(--pastel-pink) 100%);
+  min-height: 100vh;
+}
+
+body {
+  color: #333;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .gradient-pastel {
+    background: linear-gradient(135deg, var(--pastel-lavender) 0%, var(--pastel-pink) 100%);
+  }
+}
+
