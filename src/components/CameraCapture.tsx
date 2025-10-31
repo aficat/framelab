@@ -26,10 +26,10 @@ export default function CameraCapture() {
   const { webcamRef, capture, flipCamera: handleFlipCamera } = useCamera();
   const [isCapturing, setIsCapturing] = useState(false);
 
-  const layoutConfig = layout === '3-strip' ? { count: 3 } : { count: 4 }; // Supports 4-strip, 4-collage, and 2x2-grid (all need 4 photos)
+  const layoutConfig = layout === '3-strip' ? { count: 3 } : { count: 4 }; // Supports 4-strip and 4-collage (need 4 photos)
   const remainingPhotos = layoutConfig.count - capturedPhotos.length;
   const isRetake = retakeIndex !== null;
-  const isComplete = !isRetake && remainingPhotos === 0;
+  const isComplete = false; // allow extra captures; user decides when to proceed
 
   // Use refs to avoid circular dependency
   const resetCountdownRef = useRef<(() => void) | null>(null);
@@ -189,6 +189,15 @@ export default function CameraCapture() {
               className="bg-white text-purple-600 w-20 h-20 rounded-full font-bold text-xl shadow-2xl hover:scale-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               📸
+            </button>
+
+            {/* Proceed to Review */}
+            <button
+              onClick={() => setCurrentStep('review')}
+              disabled={capturedPhotos.length < layoutConfig.count}
+              className="bg-white/20 backdrop-blur-md text-white px-4 py-3 rounded-full font-semibold hover:bg-white/30 transition-all disabled:opacity-50"
+            >
+              Done ({capturedPhotos.length}/{layoutConfig.count}+)
             </button>
 
             {/* Filter Selector */}

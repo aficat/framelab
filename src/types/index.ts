@@ -39,6 +39,8 @@ export interface PhotoBoothState {
   capturedPhotos: CapturedPhoto[];
   currentPhotoIndex: number;
   retakeIndex: number | null;
+  selectedPhotoIds: string[]; // favorites picked for final composite
+  maxCaptures: number; // allow taking extra photos before selection
   
   // Camera
   facingMode: 'user' | 'environment';
