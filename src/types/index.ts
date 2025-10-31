@@ -38,6 +38,7 @@ export interface PhotoBoothState {
   // Photos
   capturedPhotos: CapturedPhoto[];
   currentPhotoIndex: number;
+  retakeIndex: number | null;
   
   // Camera
   facingMode: 'user' | 'environment';
