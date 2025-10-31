@@ -25,14 +25,6 @@ export const layouts: Layout[] = [
     photoCount: 4,
     dimensions: '4" x 4"', // Standard 4-CUT multi-frame (inspired by Solace Studios)
   },
-  {
-    id: '2x2-grid',
-    name: '2x2 Grid',
-    description: 'Instagram-friendly 2x2 grid (4" x 4")',
-    orientation: 'landscape',
-    photoCount: 4,
-    dimensions: '4" x 4"', // Standard square photobooth size
-  },
 ];
 
 export const getLayoutById = (id: string): Layout | undefined => {

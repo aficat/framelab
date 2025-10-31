@@ -67,7 +67,7 @@ export const createComposite = async (
       ctx.drawImage(img, x, y, photoWidth, photoHeight);
       ctx.restore();
     }
-  } else if (layout === '4-collage' || layout === '2x2-grid') {
+  } else if (layout === '4-collage') {
     const cols = 2;
     const rows = 2;
     const photoWidth = (canvas.width * 0.9) / cols;
