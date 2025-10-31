@@ -82,7 +82,7 @@ export default function CameraCapture() {
   }, [resetCountdown, startCountdown]);
 
   const handleTakePhoto = () => {
-    if (!isCapturing && seconds === 0) {
+    if (!isCapturing && !seconds) {
       startCountdown();
     }
   };
