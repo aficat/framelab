@@ -22,7 +22,6 @@ export default function CameraCapture() {
   } = usePhotoBoothStore();
 
   const { webcamRef, capture, flipCamera: handleFlipCamera } = useCamera();
-  const { seconds, start: startCountdown, reset: resetCountdown } = useCountdown(3, handleCapture);
   const [isCapturing, setIsCapturing] = useState(false);
 
   const layoutConfig = layout === '3-strip' ? { count: 3 } : { count: 4 };
@@ -62,6 +61,8 @@ export default function CameraCapture() {
       }, 1000);
     }
   }, [capture, filter, addCapturedPhoto, remainingPhotos, isCapturing, resetCountdown, startCountdown, setCurrentStep]);
+
+  const { seconds, start: startCountdown, reset: resetCountdown } = useCountdown(3, handleCapture);
 
   const handleTakePhoto = () => {
     startCountdown();

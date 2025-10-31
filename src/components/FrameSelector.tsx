@@ -77,8 +77,8 @@ export default function FrameSelector() {
               className="bg-white rounded-2xl p-4 shadow-lg cursor-pointer hover:shadow-xl transition-all relative"
             >
               {frame.premium && (
-                <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                  ⭐ Premium
+                <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-[10px] px-2 py-1 rounded-full font-semibold tracking-wide uppercase">
+                  🌟 Limited Edition
                 </div>
               )}
               <div className="aspect-square bg-gradient-to-br from-pastel-pink to-pastel-lavender rounded-xl mb-3 flex items-center justify-center">
